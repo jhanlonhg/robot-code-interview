@@ -34,19 +34,29 @@ class Robot {
 
   private def moveX(amount: Int): (Int, Int) = {
     val (x, y) = this.coordinates
-    (x + amount, y)
+    (checkBounds(x + amount), y)
   }
 
   private def moveY(amount: Int): (Int, Int) = {
     val (x, y) = this.coordinates
-    (x, y + amount)
+    (x, checkBounds(y + amount))
+  }
+
+  private def checkBounds(coordinate: Int): Int = {
+    val BOUNDS = 10
+    if (coordinate > BOUNDS)
+      coordinate - (BOUNDS * 2 + 1)
+    else if (coordinate < -BOUNDS)
+      coordinate + (BOUNDS * 2 + 1)
+    else
+      coordinate
   }
 
   def move(instructions: String): (Int, Int) = {
     val parsedInstructions: Seq[Directions] = parseInstructions(instructions)
 
     for {instruction <- parsedInstructions} {
-      coordinates = moveSingle(instruction)
+      this.coordinates = moveSingle(instruction)
     }
 
     coordinates
