@@ -8,9 +8,9 @@ object Directions {
   object Right extends Directions
 }
 
-class Robot {
-  var coordinates: (Int, Int) = (0, 0)
+case class Coordinates(x:Int = 0, y:Int = 0)
 
+class Robot {
   private def parseInstructions(instructions: String): Seq[Directions] = {
     def parseInstruction(char: Char): Option[Directions] =
       char match {
@@ -18,48 +18,58 @@ class Robot {
         case 'D' => Some(Directions.Down)
         case 'L' => Some(Directions.Left)
         case 'R' => Some(Directions.Right)
-        case _ => None
+        case _   => None
       }
-    instructions.flatMap(instruction => parseInstruction(instruction))
+    instructions.flatMap(parseInstruction)
   }
 
-  private def moveSingle(instruction: Directions): (Int, Int) = {
+  private def moveAll(coordinates: Coordinates, instructions: Seq[Directions]): Coordinates = {
+    if (instructions.isEmpty)
+      coordinates
+    else
+      moveAll(moveSingle(coordinates, instructions.head), instructions.tail)
+  }
+
+  private def moveSingle(coordinates: Coordinates, instruction: Directions): Coordinates = {
     instruction match {
-      case Directions.Up => moveY(1)
-      case Directions.Down => moveY(-1)
-      case Directions.Left => moveX(-1)
-      case Directions.Right => moveX(1)
+      case Directions.Up    => moveY(coordinates, 1)
+      case Directions.Down  => moveY(coordinates, -1)
+      case Directions.Left  => moveX(coordinates, -1)
+      case Directions.Right => moveX(coordinates, 1)
     }
   }
 
-  private def moveX(amount: Int): (Int, Int) = {
-    val (x, y) = this.coordinates
-    (checkBounds(x + amount), y)
+  private def moveX(coordinates: Coordinates, amount: Int): Coordinates = {
+    coordinates.copy(
+      checkBounds(coordinates.x + amount),
+      coordinates.y
+    )
   }
 
-  private def moveY(amount: Int): (Int, Int) = {
-    val (x, y) = this.coordinates
-    (x, checkBounds(y + amount))
+  private def moveY(coordinates: Coordinates, amount: Int): Coordinates = {
+    coordinates.copy(
+      coordinates.x,
+      checkBounds(coordinates.y + amount)
+    )
   }
 
   private def checkBounds(coordinate: Int): Int = {
     val BOUNDS = 10
+    def wrap = (bound: Int) => bound * 2 + 1
+
     if (coordinate > BOUNDS)
-      coordinate - (BOUNDS * 2 + 1)
+      coordinate - wrap(BOUNDS)
     else if (coordinate < -BOUNDS)
-      coordinate + (BOUNDS * 2 + 1)
+      coordinate + wrap(BOUNDS)
     else
       coordinate
   }
 
   def move(instructions: String): (Int, Int) = {
     val parsedInstructions: Seq[Directions] = parseInstructions(instructions)
+    val startingCoordinates = Coordinates(0,0)
+    val finalCoordinates = moveAll(startingCoordinates, parsedInstructions)
 
-    for {instruction <- parsedInstructions} {
-      this.coordinates = moveSingle(instruction)
-    }
-
-    coordinates
+    (finalCoordinates.x, finalCoordinates.y)
   }
-
 }
