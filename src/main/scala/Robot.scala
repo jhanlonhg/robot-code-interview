@@ -65,11 +65,10 @@ object Robot {
       coordinate
   }
 
-  def move(instructions: String): (Int, Int) = {
+  def move(instructions: String): Coordinates = {
     val parsedInstructions: Seq[Directions] = parseInstructions(instructions)
     val startingCoordinates = Coordinates(0,0)
-    val finalCoordinates = moveAll(startingCoordinates, parsedInstructions)
 
-    (finalCoordinates.x, finalCoordinates.y)
+    moveAll(startingCoordinates, parsedInstructions)
   }
 }
