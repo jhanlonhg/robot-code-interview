@@ -40,17 +40,11 @@ object Robot {
   }
 
   private def moveX(coordinates: Coordinates, amount: Int): Coordinates = {
-    coordinates.copy(
-      checkBounds(coordinates.x + amount),
-      coordinates.y
-    )
+    coordinates.copy(x = checkBounds(coordinates.x + amount))
   }
 
   private def moveY(coordinates: Coordinates, amount: Int): Coordinates = {
-    coordinates.copy(
-      coordinates.x,
-      checkBounds(coordinates.y + amount)
-    )
+    coordinates.copy(y = checkBounds(coordinates.y + amount))
   }
 
   private def checkBounds(coordinate: Int): Int = {
