@@ -4,7 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class RobotTest extends AnyFunSuite {
   test("Robot should start at the origin point") {
-    assert(new Robot().coordinates == (0, 0))
+    assert(new Robot().move("") == (0, 0))
   }
 
   test("'U' input should cause the robot to go up") {
