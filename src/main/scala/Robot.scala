@@ -10,7 +10,7 @@ object Directions {
 
 case class Coordinates(x:Int = 0, y:Int = 0)
 
-class Robot {
+object Robot {
   private def parseInstructions(instructions: String): Seq[Directions] = {
     def parseInstruction(char: Char): Option[Directions] =
       char match {
