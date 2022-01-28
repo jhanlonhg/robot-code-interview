@@ -8,7 +8,7 @@ object Directions {
   object Right extends Directions
 }
 
-case class Coordinates(x:Int = 0, y:Int = 0)
+case class Coordinates(x:Int, y:Int)
 
 object Robot {
   private def parseInstructions(instructions: String): Seq[Directions] = {
