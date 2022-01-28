@@ -1,5 +1,10 @@
 package org.hanlonjohn23
 
+object Defaults {
+  val origin = Coordinates(0,0)
+  val BOUNDS = 10
+}
+
 sealed trait Directions
 object Directions {
   object Up extends Directions
@@ -47,9 +52,8 @@ object Robot {
     coordinates.copy(y = checkBounds(coordinates.y + amount))
   }
 
-  private def checkBounds(coordinate: Int): Int = {
-    val BOUNDS = 10
-    def wrap = (bound: Int) => bound * 2 + 1
+  private def checkBounds(coordinate: Int, BOUNDS: Int = Defaults.BOUNDS ): Int = {
+    def wrap: Int => Int = (bound: Int) => bound * 2 + 1
 
     if (coordinate > BOUNDS)
       coordinate - wrap(BOUNDS)
@@ -59,10 +63,8 @@ object Robot {
       coordinate
   }
 
-  def move(instructions: String): Coordinates = {
+  def move(instructions: String, origin: Coordinates = Defaults.origin): Coordinates = {
     val parsedInstructions: Seq[Directions] = parseInstructions(instructions)
-    val startingCoordinates = Coordinates(0,0)
-
-    moveAll(startingCoordinates, parsedInstructions)
+    moveAll(origin, parsedInstructions)
   }
 }
